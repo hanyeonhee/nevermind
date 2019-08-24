@@ -57,8 +57,11 @@ public class StoneController : MonoBehaviour
         
     }
 
+    
     public void Move(Node n)
     {
+        if (!CreateController.cc.isMyTurn)
+            return;
 
         n.isPlayer = true;
 
@@ -66,8 +69,14 @@ public class StoneController : MonoBehaviour
         CreateController.cc.playerNode = n;
         CreateController.cc.selectButtons.SetActive(true);
         CreateController.cc.popupObject.SetActive(true);
+        CreateController.cc.isMyTurn = false;
+        CreateController.cc.pv.RPC("CommunicateWithOther", PhotonTargets.Others, CreateController.cc.pv.owner.ID);
+    }
 
-
+    [PunRPC]
+    public void CommunicateWithOther()
+    {
+        CreateController.cc.isMyTurn = true;
     }
 
     public void ChangeTile(PawnType pt, Node n)

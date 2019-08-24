@@ -26,6 +26,10 @@ public class CreateController : MonoBehaviour
 
     public Node playerNode;
 
+    public PhotonView pv;
+
+    public bool isMyTurn;
+
     private void Awake()
     {
         cc = this;
@@ -33,7 +37,8 @@ public class CreateController : MonoBehaviour
 
     void Start()
     {
-
+        if (pv.viewID == 1)
+            isMyTurn = false;
         popupObject = GameObject.FindWithTag("Pop");
         popupObject.SetActive(false);
         //GameObject popupObject = new GameObject();
@@ -110,25 +115,17 @@ public class CreateController : MonoBehaviour
                         nodes[i, j].button.interactable = false;
                 }
 
+                //첫 턴 예외
+                if (i == 5 && turn == 1)
+                    nodes[i, j].button.interactable = false;
+
             }
         }
 
-        if(Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            playerNode.button.GetComponent<StoneController>().ChangeTile(PawnType.Love, playerNode);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            playerNode.button.GetComponent<StoneController>().ChangeTile(PawnType.Friendship, playerNode);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            playerNode.button.GetComponent<StoneController>().ChangeTile(PawnType.Business, playerNode);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            playerNode.button.GetComponent<StoneController>().ChangeTile(PawnType.Family, playerNode);
-        }
+        Debug.Log(PhotonNetwork.countOfPlayersInRooms);
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
     }
 
 
